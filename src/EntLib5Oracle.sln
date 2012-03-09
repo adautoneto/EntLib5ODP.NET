@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntLib5Oracle", "EntLib5Oracle\EntLib5Oracle.csproj", "{2BAC88E5-9A46-43F4-8125-CA0926287A23}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2BAC88E5-9A46-43F4-8125-CA0926287A23}.Debug|x86.ActiveCfg = Debug|x86
+		{2BAC88E5-9A46-43F4-8125-CA0926287A23}.Debug|x86.Build.0 = Debug|x86
+		{2BAC88E5-9A46-43F4-8125-CA0926287A23}.Release|x86.ActiveCfg = Release|x86
+		{2BAC88E5-9A46-43F4-8125-CA0926287A23}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Data.5.0.505.0\lib\NET35;packages\EntLibContrib.Data.OdpNet.5.0.505.0\lib\NET35
+	EndGlobalSection
+EndGlobal

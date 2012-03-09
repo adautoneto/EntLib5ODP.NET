@@ -1,0 +1,805 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EntLibContrib.Data.OdpNet</name>
+    </assembly>
+    <members>
+        <member name="T:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionData">
+            <summary>
+            Oracle-specific connection information.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionData.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionData"/> class with default values.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionData.Packages">
+            <summary>
+            Gets a collection of <see cref="T:EntLibContrib.Data.OdpNet.Configuration.OraclePackageData"/> objects.
+            </summary>
+            <value>A collection of <see cref="T:EntLibContrib.Data.OdpNet.Configuration.OraclePackageData"/> objects.</value>
+        </member>
+        <member name="T:EntLibContrib.Data.OdpNet.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Properties.Resources.ExceptionCommandNotOracleCommand">
+            <summary>
+              Looks up a localized string similar to The command must be an OracleCommand..
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Properties.Resources.ExceptionMessageUpdateDataSetRowFailure">
+            <summary>
+              Looks up a localized string similar to Failed to update row .
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Data.OdpNet.IOraclePackage">
+            <summary>
+            Represents the description of an oracle package mapping.
+            </summary>
+            <remarks>
+            <see cref="T:EntLibContrib.Data.OdpNet.IOraclePackage"/> is used to specify how to transform stored procedure names
+            into package qualified Oracle stored procedure names.
+            </remarks>
+            <seealso cref="T:EntLibContrib.Data.OdpNet.OracleDatabase"/>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.IOraclePackage.Name">
+            <summary>
+            Gets the name of the package.
+            </summary>
+            <value>The name of the package.</value>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.IOraclePackage.Prefix">
+            <summary>
+            Gets the prefix for the package.
+            </summary>
+            <value>The prefix for the package.</value>
+        </member>
+        <member name="T:EntLibContrib.Data.OdpNet.OracleDataReaderWrapper">
+            <summary>
+            A wrapper to convert data for Oracle for the reader.
+            </summary>
+            <remarks>
+            The wrapper performs type conversions to enable retrieving values for types not supported natively by the
+            <see cref="T:Oracle.DataAccess.Client.OracleDataReader"/>.
+            <para/>
+            The wrapped data reader can be accessed through the <see cref="P:EntLibContrib.Data.OdpNet.OracleDataReaderWrapper.InnerReader"/>
+            property.
+            </remarks>
+            <seealso cref="T:System.Data.IDataReader"/>
+            <seealso cref="T:Oracle.DataAccess.Client.OracleDataReader"/>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDataReaderWrapper.GetBoolean(System.Int32)">
+            <summary>
+            Gets the value of the specified column as a Boolean.
+            </summary>
+            <param name="index">The zero-based column ordinal.</param>
+            <returns>The converted value of the column.</returns>
+            <remarks>
+            Bit data type is mapped to a number in Oracle database. When reading bit data from Oracle database,
+            it will map to 0 as false and everything else as true.  This method uses System.Convert.ToBoolean() method
+            for type conversions.
+            </remarks>        
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDataReaderWrapper.GetByte(System.Int32)">
+            <summary>
+            Gets the value of the specified column converted to an 8-bit unsigned integer. 
+            </summary>
+            <param name="index">The zero-based column ordinal.</param>
+            <returns>The 8-bit unsigned integer value of the specified column.</returns>
+            <remarks> This method uses System.Convert.ToByte() method
+            for type conversions.</remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDataReaderWrapper.GetGuid(System.Int32)">
+            <summary>
+            Gets the value of the specified field converted to a GUID.
+            </summary>
+            <param name="index">The index of the field to find.</param>
+            <returns>The GUID of the specified field.</returns>
+            <remarks>
+            This method will cast the result data Guid data type. In Oracle you must use that as Raw(16) so
+            that this method can convert that to Guid properly.
+            </remarks>        
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDataReaderWrapper.GetInt16(System.Int32)">
+            <summary>
+            Gets the value of the specified field converted to a 16-bit signed integer.
+            </summary>
+            <param name="index">The index of the field to find.</param>
+            <returns>The 16-bit signed integer value of the specified field.</returns>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.OracleDataReaderWrapper.InnerReader">
+            <summary>
+            Gets the wrapped <see cref="T:Oracle.DataAccess.Client.OracleDataReader"/>.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Data.OdpNet.RefCountingOracleDataReaderWrapper">
+            <summary>
+            Another wrapper for <see cref="T:Oracle.DataAccess.Client.OracleDataReader"/> that adds connection
+            reference counting.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.RefCountingOracleDataReaderWrapper.Close">
+            <summary>
+            Closes the <see cref="T:System.Data.IDataReader"/> Object.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.RefCountingOracleDataReaderWrapper.Dispose(System.Boolean)">
+            <summary>
+            Close the contained data reader when disposing and releases the connection
+            if it's not used anymore.
+            </summary>
+            <param name="disposing">True if called from Dispose method, false if called from finalizer. Since
+            this class doesn't have a finalizer, this will always be true.</param>
+        </member>
+        <member name="T:EntLibContrib.Data.OdpNet.OracleDatabase">
+            <summary>
+            Represents an Oracle database.
+            </summary>
+            <remarks>
+            <para>
+            Internally uses an ODP.NET Managed Provider from Oracle (<see cref="N:Oracle.DataAccess.Client"/>) to connect to an Oracle 9i, or newer, database.
+            </para>
+            <para>
+            When retrieving a result set, it will build the package name. The package name should be set based
+            on the stored procedure prefix and this should be set via configuration. For
+            example, a package name should be set as prefix of "ENTLIB_" and package name of
+            "pkgENTLIB_ARCHITECTURE". For your applications, this is required only if you are defining your stored procedures returning
+            ref cursors.
+            </para>
+            <para>
+            This is a direct copy of the Enterprise Library Oracle Data Provider from Microsoft only using the ODP.NET data client from
+            Oracle instead of the Microsoft one plus a few additional features.
+            </para>
+            </remarks>
+        </member>
+        <member name="F:EntLibContrib.Data.OdpNet.OracleDatabase.RefCursorName">
+            <summary>
+            The default ref cursor name used for all stored procedures that use ref cursors.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Data.OdpNet.OracleDatabase.AllPrefix">
+            <summary>
+            Packages with this prefix will apply the package name to all stored procedure names.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Data.OdpNet.OracleDatabase"/> class with a connection string and a list of Oracle packages.
+            </summary>
+            <param name="connectionString">The connection string for the database.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.#ctor(System.String,System.Collections.Generic.IEnumerable{EntLibContrib.Data.OdpNet.IOraclePackage})">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Data.OdpNet.OracleDatabase"/> class with a connection string and a list of Oracle packages.
+            </summary>
+            <param name="connectionString">The connection string for the database.</param>
+            <param name="packages">A list of <see cref="T:EntLibContrib.Data.OdpNet.IOraclePackage"/> objects.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.#ctor(System.String,System.Collections.Generic.IEnumerable{EntLibContrib.Data.OdpNet.IOraclePackage},Microsoft.Practices.EnterpriseLibrary.Data.Instrumentation.IDataInstrumentationProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Data.OdpNet.OracleDatabase"/> class with a connection string,
+            a list of Oracle packages, and an instrumentation provider.
+            </summary>
+            <param name="connectionString">The connection string for the database.</param>
+            <param name="packages">A list of <see cref="T:EntLibContrib.Data.OdpNet.IOraclePackage"/> objects.</param>
+            <param name="instrumentationProvider">The instrumentation provider.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.AddInParameter(System.Data.Common.DbCommand,System.String,Oracle.DataAccess.Client.OracleDbType)">
+            <summary>
+            Adds a new In <see cref="T:System.Data.Common.DbParameter"/> object to the given
+            <paramref name="command"/>.
+            </summary>
+            <param name="command">The command to add the in parameter.</param>
+            <param name="name">The name of the parameter.</param>
+            <param name="dbType">One of the <see cref="T:Oracle.DataAccess.Client.OracleDbType"/>
+            values.</param>
+            <remarks>
+            This version of the method is used when you can have the same
+            parameter object multiple times with different values.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.AddInParameter(System.Data.Common.DbCommand,System.String,Oracle.DataAccess.Client.OracleDbType,System.Object)">
+            <summary>
+            Adds a new In <see cref="T:System.Data.Common.DbParameter"/> object to the given
+            <paramref name="command"/>.
+            </summary>
+            <param name="command">The commmand to add the parameter.</param>
+            <param name="name">The name of the parameter.</param>
+            <param name="dbType">One of the <see cref="T:Oracle.DataAccess.Client.OracleDbType"/>
+            values.</param>
+            <param name="value">The value of the parameter.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.AddInParameter(System.Data.Common.DbCommand,System.String,Oracle.DataAccess.Client.OracleDbType,System.String,System.Data.DataRowVersion)">
+            <summary>
+            Adds a new In <see cref="T:System.Data.Common.DbParameter"/> object to the given
+            <paramref name="command"/>.
+            </summary>
+            <param name="command">The command to add the parameter.</param>
+            <param name="name">The name of the parameter.</param>
+            <param name="dbType">One of the <see cref="T:Oracle.DataAccess.Client.OracleDbType"/>
+            values.</param>
+            <param name="sourceColumn">The name of the source column
+            mapped to the DataSet and used for loading or returning the value.</param>
+            <param name="sourceVersion">One of the
+            <see cref="T:System.Data.DataRowVersion"/> values.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.AddOutParameter(System.Data.Common.DbCommand,System.String,Oracle.DataAccess.Client.OracleDbType,System.Int32)">
+            <summary>
+            Adds a new Out <see cref="T:System.Data.Common.DbParameter"/> object to the given
+            <paramref name="command"/>.
+            </summary>
+            <param name="command">The command to add the out parameter.</param>
+            <param name="name">The name of the parameter.</param>
+            <param name="dbType">One of the <see cref="T:Oracle.DataAccess.Client.OracleDbType"/>
+            values.</param>
+            <param name="size">The maximum size of the data within the
+            column.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.AddParameter(System.Data.Common.DbCommand,System.String,Oracle.DataAccess.Client.OracleDbType,System.Int32,System.Data.ParameterDirection,System.Boolean,System.Byte,System.Byte,System.String,System.Data.DataRowVersion,System.Object)">
+            <summary>
+            Adds a new instance of a <see cref="T:System.Data.Common.DbParameter"/> object to
+            the command.
+            </summary>
+            <param name="command">The command to add the parameter.</param>
+            <param name="name">The name of the parameter.</param>
+            <param name="dbType">One of the <see cref="T:System.Data.DbType"/> values.</param>
+            <param name="size">The maximum size of the data within the
+            column.</param>
+            <param name="direction">One of the
+            <see cref="T:System.Data.ParameterDirection"/> values.</param>
+            <param name="nullable">A value indicating whether the
+            parameter accepts <see langword="null"/> (<b>Nothing</b> in Visual
+            Basic) values.</param>
+            <param name="precision">The maximum number of digits used to
+            represent the <paramref name="value"/>.</param>
+            <param name="scale">The number of decimal places to which
+            <paramref name="value"/> is resolved.</param>
+            <param name="sourceColumn">The name of the source column
+            mapped to the DataSet and used for loading or returning the
+            <paramref name="value"/>.</param>
+            <param name="sourceVersion">One of the
+            <see cref="T:System.Data.DataRowVersion"/> values.</param>
+            <param name="value">The value of the parameter.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.AddParameter(System.Data.Common.DbCommand,System.String,Oracle.DataAccess.Client.OracleDbType,System.Data.ParameterDirection,System.String,System.Data.DataRowVersion,System.Object)">
+            <summary>
+            Adds a new instance of a <see cref="T:System.Data.Common.DbParameter"/> object to
+            the command.
+            </summary>
+            <param name="command">The command to add the parameter.</param>
+            <param name="name">The name of the parameter.</param>
+            <param name="dbType">One of the <see cref="T:Oracle.DataAccess.Client.OracleDbType"/>
+            values.</param>
+            <param name="direction">One of the
+            <see cref="T:System.Data.ParameterDirection"/> values.</param>
+            <param name="sourceColumn">The name of the source column
+            mapped to the DataSet and used for loading or returning the
+            <paramref name="value"/>.</param>
+            <param name="sourceVersion">One of the
+            <see cref="T:System.Data.DataRowVersion"/> values.</param>
+            <param name="value">The value of the parameter.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.AddParameter(System.Data.Common.DbCommand,System.String,System.Data.DbType,System.Int32,System.Data.ParameterDirection,System.Boolean,System.Byte,System.Byte,System.String,System.Data.DataRowVersion,System.Object)">
+            <summary>
+            <para>Adds a new instance of a <see cref="T:System.Data.Common.DbParameter"/> object to the command.</para>
+            </summary>
+            <param name="command">The command to add the parameter.</param>
+            <param name="name"><para>The name of the parameter.</para></param>
+            <param name="dbType"><para>One of the <see cref="T:System.Data.DbType"/> values.</para></param>
+            <param name="size"><para>The maximum size of the data within the column.</para></param>
+            <param name="direction"><para>One of the <see cref="T:System.Data.ParameterDirection"/> values.</para></param>
+            <param name="nullable"><para>A value indicating whether the parameter accepts <see langword="null"/> (<b>Nothing</b> in Visual Basic) values.</para></param>
+            <param name="precision"><para>The maximum number of digits used to represent the <paramref name="value"/>.</para></param>
+            <param name="scale"><para>The number of decimal places to which <paramref name="value"/> is resolved.</para></param>
+            <param name="sourceColumn"><para>The name of the source column mapped to the DataSet and used for loading or returning the <paramref name="value"/>.</para></param>
+            <param name="sourceVersion"><para>One of the <see cref="T:System.Data.DataRowVersion"/> values.</para></param>
+            <param name="value"><para>The value of the parameter.</para></param>       
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.ConfigureParameter(Oracle.DataAccess.Client.OracleParameter,System.String,Oracle.DataAccess.Client.OracleDbType,System.Int32,System.Data.ParameterDirection,System.Boolean,System.Byte,System.Byte,System.String,System.Data.DataRowVersion,System.Object)">
+            <summary>
+            Configures a given <see cref="T:System.Data.Common.DbParameter"/>.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <param name="name">The name of the parameter.</param>
+            <param name="dbType">One of the <see cref="T:Oracle.DataAccess.Client.OracleDbType"/>
+            values.</param>
+            <param name="size">The maximum size of the data within the
+            column.</param>
+            <param name="direction">One of the
+            <see cref="T:System.Data.ParameterDirection"/> values.</param>
+            <param name="nullable">A value indicating whether the
+            parameter accepts <see langword="null"/> (<b>Nothing</b> in Visual
+            Basic) values.</param>
+            <param name="precision">The maximum number of digits used to
+            represent the <paramref name="value"/>.</param>
+            <param name="scale">The number of decimal places to which
+            <paramref name="value"/> is resolved.</param>
+            <param name="sourceColumn">The name of the source column
+            mapped to the DataSet and used for loading or returning the
+            <paramref name="value"/>.</param>
+            <param name="sourceVersion">One of the
+            <see cref="T:System.Data.DataRowVersion"/> values.</param>
+            <param name="value">The value of the parameter.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.CreateParameter(System.String,Oracle.DataAccess.Client.OracleDbType,System.Int32,System.Data.ParameterDirection,System.Boolean,System.Byte,System.Byte,System.String,System.Data.DataRowVersion,System.Object)">
+            <summary>
+            Adds a new instance of a <see cref="T:System.Data.Common.DbParameter"/> object.
+            </summary>
+            <param name="name">The name of the parameter.</param>
+            <param name="dbType">One of the <see cref="T:System.Data.DbType"/> values.</param>
+            <param name="size">The maximum size of the data within the
+            column.</param>
+            <param name="direction">One of the
+            <see cref="T:System.Data.ParameterDirection"/> values.</param>
+            <param name="nullable">A value indicating whether the
+            parameter accepts <see langword="null"/> (<b>Nothing</b> in Visual
+            Basic) values.</param>
+            <param name="precision">The maximum number of digits used to
+            represent the <paramref name="value"/>.</param>
+            <param name="scale">The number of decimal places to which
+            <paramref name="value"/> is resolved.</param>
+            <param name="sourceColumn">The name of the source column
+            mapped to the DataSet and used for loading or returning the
+            <paramref name="value"/>.</param>
+            <param name="sourceVersion">One of the
+            <see cref="T:System.Data.DataRowVersion"/> values.</param>
+            <param name="value">The value of the parameter.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.DeriveParameters(System.Data.Common.DbCommand)">
+            <summary>
+            Retrieves parameter information from the stored procedure specified in the <see cref="T:System.Data.Common.DbCommand"/> and populates the Parameters collection of the specified <see cref="T:System.Data.Common.DbCommand"/> object.
+            </summary>
+            <param name="discoveryCommand">The <see cref="T:System.Data.Common.DbCommand"/> to do the discovery.</param>
+            <remarks>
+            The <see cref="T:System.Data.Common.DbCommand"/> must be an instance of a <see cref="T:Oracle.DataAccess.Client.OracleCommand"/> object.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.ExecuteReader(System.Data.Common.DbCommand)">
+            <summary>
+            Creates an <see cref="T:Oracle.DataAccess.Client.OracleDataReader"/> based on the <paramref name="command"/>.
+            </summary>
+            <param name="command">The command wrapper to execute.</param>
+            <returns>
+            An <see cref="T:Oracle.DataAccess.Client.OracleDataReader"/> object.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            	<paramref name="command"/> can not be <see langword="null"/> (Nothing in Visual Basic).
+            </exception>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.CreateWrappedReader(Microsoft.Practices.EnterpriseLibrary.Data.DatabaseConnectionWrapper,System.Data.IDataReader)">
+            <summary>
+            All data readers get wrapped in objects so that they properly manage connections.
+            Some derived Database classes will need to create a different wrapper, so this
+            method is provided so that they can do this.
+            </summary>
+            <param name="connection">Connection + refcount.</param>
+            <param name="innerReader">The reader to wrap.</param>
+            <returns>The new reader.</returns>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.ExecuteReader(System.Data.Common.DbCommand,System.Data.Common.DbTransaction)">
+            <summary>
+            Creates an <see cref="T:Oracle.DataAccess.Client.OracleDataReader"/> based on the <paramref name="command"/>.
+            </summary>
+            <param name="command">The command wrapper to execute.</param>
+            <param name="transaction">The transaction to participate in when executing this reader.</param>
+            <returns>
+            An <see cref="T:Oracle.DataAccess.Client.OracleDataReader"/> object.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            	<para><paramref name="command"/> can not be <see langword="null"/> (Nothing in Visual Basic).</para>
+            	<para>- or -</para>
+            	<para><paramref name="transaction"/> can not be <see langword="null"/> (Nothing in Visual Basic).</para>
+            </exception>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.ExecuteXmlReader(System.Data.Common.DbCommand)">
+            <summary>
+            Executes the <see cref="T:Oracle.DataAccess.Client.OracleCommand"/> and returns a new <see cref="T:System.Xml.XmlReader"/>.
+            </summary>
+            <param name="command">The <see cref="T:Oracle.DataAccess.Client.OracleCommand"/> to execute.</param>
+            <returns>An <see cref="T:System.Xml.XmlReader"/> object.</returns>
+            <remarks>
+            Unlike other Execute... methods that take a <see cref="T:System.Data.Common.DbCommand"/> instance, this method
+            does not set the command behavior to close the connection when you close the reader.
+            That means you'll need to close the connection yourself, by calling the
+            command.Connection.Close() method.
+            <para>
+            There is one exception to the rule above. If you're using <see cref="T:System.Transactions.TransactionScope"/> to provide
+            implicit transactions, you should NOT close the connection on this reader when you're
+            done. Only close the connection if <see cref="T:System.Transactions.Transaction"/>.Current is null.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.ExecuteXmlReader(System.Data.Common.DbCommand,System.Data.Common.DbTransaction)">
+            <summary>
+            Executes the <see cref="T:Oracle.DataAccess.Client.OracleCommand"/> in a transaction and returns a new <see cref="T:System.Xml.XmlReader"/>.
+            </summary>
+            <param name="command">The <see cref="T:Oracle.DataAccess.Client.OracleCommand"/> to execute.</param>
+            <param name="transaction">The <see cref="T:System.Data.IDbTransaction"/> to execute the command within.</param>
+            <returns>An <see cref="T:System.Xml.XmlReader"/> object.</returns>
+            <remarks>
+            Unlike other Execute... methods that take a <see cref="T:System.Data.Common.DbCommand"/> instance, this method
+            does not set the command behavior to close the connection when you close the reader.
+            That means you'll need to close the connection yourself, by calling the
+            command.Connection.Close() method.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.ExecuteDataSet(System.Data.Common.DbCommand)">
+            <summary>
+            Executes a command and returns the results in a new <see cref="T:System.Data.DataSet"/>.
+            </summary>
+            <param name="command">The command to execute to fill the <see cref="T:System.Data.DataSet"/></param>
+            <returns>
+            A <see cref="T:System.Data.DataSet"/> filed with records and, if necessary, schema.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            	<paramref name="command"/> can not be <see langword="null"/> (Nothing in Visual Basic).
+            </exception>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.ExecuteDataSet(System.Data.Common.DbCommand,System.Data.Common.DbTransaction)">
+            <summary>
+            Executes a command and returns the result in a new <see cref="T:System.Data.DataSet"/>.
+            </summary>
+            <param name="command">The command to execute to fill the <see cref="T:System.Data.DataSet"/></param>
+            <param name="transaction">The transaction to participate in when executing this reader.</param>
+            <returns>
+            A <see cref="T:System.Data.DataSet"/> filed with records and, if necessary, schema.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            	<paramref name="command"/> can not be <see langword="null"/> (<b>Nothing</b> in Visual Basic).
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            	<para><paramref name="command"/> can not be <see langword="null"/> (<b>Nothing</b> in Visual Basic).</para>
+            	<para>- or -</para>
+            	<para><paramref name="transaction"/> can not be <see langword="null"/> (<b>Nothing</b> in Visual Basic).</para>
+            </exception>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.LoadDataSet(System.Data.Common.DbCommand,System.Data.DataSet,System.String[])">
+            <summary>
+            Loads a <see cref="T:System.Data.DataSet"/> from a <see cref="T:System.Data.Common.DbCommand"/>.
+            </summary>
+            <param name="command">The command to execute to fill the <see cref="T:System.Data.DataSet"/>.</param>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/> to fill.</param>
+            <param name="tableNames">An array of table name mappings for the <see cref="T:System.Data.DataSet"/>.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.LoadDataSet(System.Data.Common.DbCommand,System.Data.DataSet,System.String[],System.Data.Common.DbTransaction)">
+            <summary>
+            Loads a <see cref="T:System.Data.DataSet"/> from a <see cref="T:System.Data.Common.DbCommand"/> in a transaction.
+            </summary>
+            <param name="command">The command to execute to fill the <see cref="T:System.Data.DataSet"/>.</param>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/> to fill.</param>
+            <param name="tableNames">An array of table name mappings for the <see cref="T:System.Data.DataSet"/>.</param>
+            <param name="transaction">The <see cref="T:System.Data.IDbTransaction"/> to execute the command in.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.GetParameterValue(System.Data.Common.DbCommand,System.String)">
+            <summary>
+            Gets a parameter value.
+            </summary>
+            <param name="command">The command that contains the parameter.</param>
+            <param name="name">The name of the parameter.</param>
+            <returns>The value of the parameter.</returns>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.SetParameterValue(System.Data.Common.DbCommand,System.String,System.Object)">
+            <summary>
+            Sets a parameter value.
+            </summary>
+            <param name="command">The command with the parameter.</param>
+            <param name="parameterName">The parameter name.</param>
+            <param name="value">The parameter value.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.GetStoredProcCommand(System.String,System.Object[])">
+            <summary>
+            Creates a <see cref="T:System.Data.Common.DbCommand"/> for a stored procedure.
+            </summary>
+            <param name="storedProcedureName">The name of the stored procedure.</param>
+            <param name="parameterValues">The list of parameters for the procedure.</param>
+            <returns>
+            The <see cref="T:System.Data.Common.DbCommand"/> for the stored procedure.
+            </returns>
+            <remarks>
+            The parameters for the stored procedure will be discovered and the values are assigned in positional order.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.GetStoredProcCommand(System.String)">
+            <summary>
+            Creates a <see cref="T:System.Data.Common.DbCommand"/> for a stored procedure.
+            </summary>
+            <param name="storedProcedureName">The name of the stored procedure.</param>
+            <returns>
+            The <see cref="T:System.Data.Common.DbCommand"/> for the stored procedure.
+            </returns>
+            <remarks>
+            The parameters for the stored procedure will be discovered and the values are assigned in positional order.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.SetUpRowUpdatedEvent(System.Data.Common.DbDataAdapter)">
+            <summary>
+            Sets the RowUpdated event for the data adapter.
+            </summary>
+            <param name="adapter">The <see cref="T:System.Data.Common.DbDataAdapter"/> to set the event.</param>
+            <remarks>The <see cref="T:System.Data.Common.DbDataAdapter"/> must be an <see cref="T:Oracle.DataAccess.Client.OracleDataAdapter"/>.</remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.SameNumberOfParametersAndValues(System.Data.Common.DbCommand,System.Object[])">
+            <summary>
+            Determines if the number of parameters in the command matches the array of parameter values.
+            </summary>
+            <param name="command">The <see cref="T:System.Data.Common.DbCommand"/> containing the parameters.</param>
+            <param name="values">The array of parameter values.</param>
+            <returns>
+            	<see langword="true"/> if the number of parameters and values match; otherwise, <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.CheckIfOracleCommand(System.Data.Common.DbCommand)">
+            <summary>
+            Checks if oracle command.
+            </summary>
+            <param name="command">The command.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.DoExecuteXmlReader(Oracle.DataAccess.Client.OracleCommand)">
+            <summary>
+            Does the execute XML reader.
+            </summary>
+            <param name="oracleCommand">The oracle command.</param>
+            <returns></returns>
+            <remarks>
+            Execute the actual XML Reader call.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.PrepareCWRefCursor(System.Data.Common.DbCommand)">
+            <summary>
+            Prepares the CW ref cursor.
+            </summary>
+            <param name="command">The command.</param>
+            <remarks>
+            This is a private method that will build the Oracle package name if your stored procedure
+            has proper prefix and postfix.
+            This functionality is include for
+            the portability of the architecture between SQL and Oracle datbase.
+            This method also adds the reference cursor to the command writer if not already added. This
+            is required for Oracle .NET managed data provider.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.GetParameterTypeRegistry(System.String)">
+            <summary>
+            Gets the parameter type registry for the specified command.
+            </summary>
+            <param name="commandText">The command text.</param>
+            <returns>Existing or new registry</returns>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.RegisterParameterType(System.Data.Common.DbCommand,System.String,System.Data.DbType)">
+            <summary>
+            Registers the type of the parameter in a parameter registry.
+            </summary>
+            <param name="command">The command.</param>
+            <param name="parameterName">Name of the parameter.</param>
+            <param name="dbType">Type of the parameter.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.OnOracleRowUpdated(System.Object,Oracle.DataAccess.Client.OracleRowUpdatedEventArgs)">
+            <summary>
+            Called when a dataset row is updated.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="args">The <see cref="T:Oracle.DataAccess.Client.OracleRowUpdatedEventArgs"/> instance containing the event data.</param>
+            <remarks>
+            Listens for the RowUpdate event on a data adapter to support UpdateBehavior.Continue
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.TranslatePackageSchema(System.String)">
+            <summary>
+            Translates the package schema.
+            </summary>
+            <param name="storedProcedureName">Name of the stored procedure.</param>
+            <returns></returns>
+            <remarks>
+            Looks into configuration and gets the information on how the command wrapper should be updated if calling a package on this
+            connection.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.ConvertBoolToShort(System.Object)">
+            <summary>
+            Converts a Boolean object to a short or DBNull if null.
+            </summary>
+            <remarks>This is specifically used in the conversion of a Boolean to OracleDbType.Int16.
+            Contrary to most interpretations of a boolean value a value of 0 (zero) stored in a Database
+            is generally regarded as representing false.</remarks>
+            <param name="value">The boolean value.</param>
+            <returns>short integer of 0 for false and 1 for true</returns>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.ConvertShortToBool(System.Object)">
+            <summary>
+            Converts a short object to Boolean.
+            </summary>
+            <remarks>This is specifically used in the conversion of OracleDbType.Int16 back to Boolean</remarks>
+            <param name="value">The short value.</param>
+            <returns>Boolean object or DBNull</returns>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.ConvertGuidToByteArray(System.Object)">
+            <summary>
+            Converts a GUID object to a byte array or DBNull if null.
+            </summary>
+            <remarks>This is specifically used in the conversion of a Guid to OracleDbType.Raw</remarks>
+            <param name="value">The Guid value.</param>
+            <returns>byte array or DBNull</returns>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.ConvertByteArrayToGuid(System.Object)">
+            <summary>
+            Converts a byte array object to GUID.
+            </summary>
+            <remarks>This is specifically used in the conversion of OracleDbType.Raw back to Guid</remarks>
+            <param name="value">The value.</param>
+            <returns>Guid object or DBNull</returns>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.OracleDatabase.QueryProcedureNeedsCursorParameter(System.Data.Common.DbCommand)">
+            <summary>
+            Queries the procedure to see if it needs a cursor parameter.
+            </summary>
+            <param name="command">The command.</param>
+            <returns></returns>
+        </member>
+        <member name="T:EntLibContrib.Data.OdpNet.Configuration.OraclePackageData">
+            <summary>
+            <para>Represents the package information to use when calling a stored procedure for Oracle.</para>
+            </summary>
+            <remarks>
+            <para>
+            A package name can be appended to the stored procedure name of a command if the prefix of the stored procedure
+            matchs the prefix defined. This allows the caller of the stored procedure to use stored procedures
+            in a more database independent fashion.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.Configuration.OraclePackageData.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Data.OdpNet.Configuration.OraclePackageData"/> class.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.Configuration.OraclePackageData.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Data.OdpNet.Configuration.OraclePackageData"/> class, given the prefix to search for and the name of the package.
+            </summary>
+            <param name="name">The name of the package to append to any found procedure that has the <paramref name="prefix"/>.</param>
+            <param name="prefix">The prefix of the stored procedures used in this package.</param>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Configuration.OraclePackageData.Prefix">
+            <summary>
+            Gets or sets the prefix of the stored procedures that are in the package in Oracle.
+            </summary>
+            <value>
+            The prefix of the stored procedures that are in the package in Oracle.
+            </value>
+        </member>
+        <member name="T:EntLibContrib.Data.OdpNet.Configuration.OracleDatabaseData">
+            <summary>
+            Describes a <see cref="T:EntLibContrib.Data.OdpNet.OracleDatabase"/> instance, aggregating information from a
+            <see cref="T:System.Configuration.ConnectionStringSettings"/>.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.Configuration.OracleDatabaseData.#ctor(System.Configuration.ConnectionStringSettings,Microsoft.Practices.EnterpriseLibrary.Common.Configuration.IConfigurationSource)">
+             <summary>
+             Initializes a new instance of the <see cref="T:EntLibContrib.Data.OdpNet.OracleDatabase"/> class with a connection string and a configuration
+             source.
+            </summary>
+            <param name="connectionStringSettings">The <see cref="T:System.Configuration.ConnectionStringSettings"/> for the represented database.</param>
+            <param name="configurationSource">The <see cref="T:Microsoft.Practices.EnterpriseLibrary.Common.Configuration.IConfigurationSource"/> from which additional information can 
+             be retrieved if necessary.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.Configuration.OracleDatabaseData.GetRegistrations">
+            <summary>
+            Creates a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel.TypeRegistration"/> instance describing the database represented by 
+            this configuration object.
+            </summary>
+            <returns>A <see cref="T:Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel.TypeRegistration"/> instance describing a database.</returns>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Configuration.OracleDatabaseData.PackageMappings">
+            <summary>
+             Gets the Oracle package mappings for the represented database.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Data.OdpNet.Configuration.DesignResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Configuration.DesignResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Configuration.DesignResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Configuration.DesignResources.OracleConnectionSettingsDescription">
+            <summary>
+              Looks up a localized string similar to An Oracle ODP.NET data provider for the Data Access Application Block..
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Configuration.DesignResources.OracleConnectionSettingsDisplayName">
+            <summary>
+              Looks up a localized string similar to Oracle Connection String.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Data.OdpNet.ParameterTypeRegistry">
+            <summary>
+            Registry of parameter types
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.ParameterTypeRegistry.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Data.OdpNet.ParameterTypeRegistry"/> class.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.ParameterTypeRegistry.RegisterParameterType(System.String,System.Data.DbType)">
+            <summary>
+            Registers the type of the parameter.
+            </summary>
+            <param name="parameterName">Name of the parameter.</param>
+            <param name="parameterType">Type of the parameter.</param>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.ParameterTypeRegistry.HasRegisteredParameterType(System.String)">
+            <summary>
+            Determines whether [has registered parameter type] [the specified parameter name].
+            </summary>
+            <param name="parameterName">Name of the parameter.</param>
+            <returns>
+            	<c>true</c> if [has registered parameter type] [the specified parameter name]; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.ParameterTypeRegistry.GetRegisteredParameterType(System.String)">
+            <summary>
+            Gets the type of the registered parameter.
+            </summary>
+            <param name="parameterName">Name of the parameter.</param>
+            <returns></returns>
+        </member>
+        <member name="T:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionSettings">
+            <summary>
+            Oracle-specific configuration section.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionSettings.SectionName">
+            <summary>
+            The section name for the <see cref="T:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionSettings"/>.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionSettings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionSettings"/> class with default values.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionSettings.GetSettings(Microsoft.Practices.EnterpriseLibrary.Common.Configuration.IConfigurationSource)">
+            <summary>
+            Retrieves the <see cref="T:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionSettings"/> from the configuration source.
+            </summary>
+            <param name="configurationSource">The configuration source to retrieve the configuration from.</param>
+            <returns>
+            The configuration section, or <see langword="null"/> (<b>Nothing</b> in Visual Basic)
+            if not present in the configuration source.
+            </returns>
+        </member>
+        <member name="P:EntLibContrib.Data.OdpNet.Configuration.OracleConnectionSettings.OracleConnectionsData">
+            <summary>
+            Collection of Oracle-specific connection information.
+            </summary>
+            <value>The oracle connections data.</value>
+        </member>
+    </members>
+</doc>
